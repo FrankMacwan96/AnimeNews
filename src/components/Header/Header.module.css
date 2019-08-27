@@ -1,0 +1,26 @@
+.header{
+    background: #38363d	;
+    border-bottom: 1px solid black;
+    box-shadow: 1px 1px black; 
+}
+
+.headerOpt{
+    display: flex;
+
+}
+
+.logo{
+    flex-grow: 1;
+    padding-top: 8px;
+}
+
+.logo img{
+    width: 100px;
+}
+
+.bars{
+    color:'white';
+    padding:'10px';
+    cursor:'pointer';
+ 
+}

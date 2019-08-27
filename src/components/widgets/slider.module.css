@@ -1,0 +1,28 @@
+.featured_item{
+    position: relative;
+}
+
+.featured_item a{
+    position: absolute;
+    width:100%;
+    bottom:0px;
+    text-decoration: none;
+    right:0px;
+}
+
+.featured_images{
+    height: 330px;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+}
+
+.featured_title{
+    color: black;
+    top: 0px;
+    width: 100%;
+    padding:20px;
+    font-weight: 300;
+    font-size: 25px;
+    font-family: Inconsolata;
+    box-sizing: border-box;        
+}
