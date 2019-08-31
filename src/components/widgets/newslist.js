@@ -1,10 +1,10 @@
 import React,{Component} from 'react';
 import { CSSTransition, TransitionGroup} from 'react-transition-group';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
+import {firebaseArticles, firebaseloop, firebaseTeams} from '../../firebase';
 import style from './newslist.module.css';
 import Button from './button';
-
+import CardInfo from '../widgets/CardInfo/cardInfo';
 class Newslist extends Component {
 
     state = {
@@ -23,13 +23,24 @@ class Newslist extends Component {
         this.request(this.state.end,end)
     }
 
-    request = (start,end) => { (axios.get(`http://localhost:3005/articles?_start=${start}&_end=${end}`).then(
-    Response =>{
+    request = (start,end) => {
+
+     firebaseTeams.once('value').then((snapshot)=>{
+         const teams = firebaseloop(snapshot)
+         this.setState({
+             teams
+         })
+     })
+
+     firebaseArticles.orderByChild('id').startAt(start).endAt(end).once('value')
+      .then((snapshot) =>{
+          const articles = firebaseloop(snapshot)
         this.setState({
-            items:[...this.state.items,...Response.data]
+            items:[...this.state.items,...articles]
         })
     }
-    )) }
+    )
+    }
 
      renderNews = (type) =>{
          let template = null;
@@ -44,9 +55,13 @@ class Newslist extends Component {
                         timeout={500}
                         key={i}
                     >
+                    
                     <div key={i} className={style.newslist_item}>
                         <Link to={`/articles/${item.id}`} >   
-                            <h2>{item.title}</h2>                         
+                        
+                            <CardInfo className={style.right} date={item.date}/>
+                            <h2>{item.title}</h2>     
+                           
                         </Link>
                     </div>
                     </CSSTransition>

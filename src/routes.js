@@ -8,6 +8,7 @@ import NewsArticles from './components/Articles/News/newsarticles'
 import VideoArticle from './components/Articles/Videos/videos'
 import NewsPage from './components/pages/newpage/newsPage'
 import VideoPage from './components/pages/videopage/videoPage'
+import SignIn from './components/signin/signin'
 // import ReactDOM from 'react-dom';
 
 
@@ -21,6 +22,7 @@ class Routes extends Component {
                     <Route path='/Video/' component = {VideoPage}/>
                     <Route path="/articles/:id" exact component={NewsArticles}/>
                     <Route path='/videos/:id' exact component={VideoArticle}/>
+                    <Route path='/signin' exact component={SignIn}/>
                 </Switch>
             </Layout>
         )

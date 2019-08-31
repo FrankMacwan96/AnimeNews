@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
+import {firebaseArticles,firebase, firebaseloop} from '../../firebase';
 import SliderContent from './slidercontent';
 
 
@@ -10,12 +10,26 @@ class Slider extends Component {
         news:[]
     }
 
-    UNSAFE_componentWillMount(){
-        Axios.get('http://localhost:3005/articles?_start=0&_end=4').then(Response => {
+    componentDidMount(){
+        
+        firebaseArticles.limitToFirst(3).once('value')
+        .then((snapshot)=>{
+            const news = firebaseloop(snapshot);
+            
             this.setState({
-                news:Response.data
+                news:news
             })
-        })    }
+        })
+        
+        
+        
+        
+        // Axios.get('http://localhost:3005/articles?_start=0&_end=4').then(Response => {
+        //     this.setState({
+        //         news:Response.data
+        //     })
+        // })   
+     }
     
     render() {
     return(    

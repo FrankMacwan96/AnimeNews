@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import styles from  './videosList.module.css';
-import axios from 'axios';
-
-
+import {firebaseTeams,firebaseloop, firebaseVideos} from '../../firebase';
 import Button from './button';
 import VideosListTemplate from './videosListTemplate'
 
@@ -16,35 +14,41 @@ class VideosList extends Component {
             amount: this.props.amount
         }
 
-        UNSAFE_componentWillMount(){
+        componentDidMount(){
             this.request(this.state.start, this.state.end)
         }
 
         request = (start,end) => {
             if(this.state.teams.length < 1){
-                axios.get(`http://localhost:3005/teams`)
-                .then( response => {
-                    this.setState({
-                        teams:response.data
-                        
+                
+                firebaseTeams.once('value').then(
+                    (snapshot)=>{
+                        const teams = firebaseloop(snapshot);
+                        this.setState({
+                            teams
+                        })
                     })
-                })
+                
+                // axios.get(`http://localhost:3005/teams`)
+                // .then( response => {
+                //     this.setState({
+                //         teams:response.data
+                        
+                //     })
+                // })
             }
 
-            axios.get(`http://localhost:3005/videos`).then(response => { 
-                this.setState({
-                            end:this.props.last?response.data.length():this.state.end 
-                        }) 
-                    })
-                    console.log(this.state.end)
-            axios.get(`http://localhost:3005/videos?_start=${start}&_end=${end}`)
-            .then( response => {
-                this.setState({
-                    videos:[...this.state.videos,...response.data],
-                    start,
-                    end
-                })
-            })
+            
+                                                                                 
+               firebaseVideos.orderByChild('id').startAt(start).endAt(end).once('value').then(
+                        (snapshot)=>{
+                            const videos = firebaseloop(snapshot);
+                            this.setState({
+                                videos:[...this.state.videos,...videos],
+                                start,
+                                end
+                            })
+                        })
         }
 
         renderVideos = () => {
@@ -62,7 +66,7 @@ class VideosList extends Component {
 
         loadMore = () => {
             let end = this.state.end + this.state.amount;
-            this.request(this.state.end, end)
+            this.request(this.state.end+1, end)
         }
 
         renderButton = () => {
@@ -83,6 +87,7 @@ class VideosList extends Component {
         }
 
         render(){
+            console.log(this.state)
             return(
                 <div className={styles.videoList_wrapper}>
                     { this.renderTitle() }

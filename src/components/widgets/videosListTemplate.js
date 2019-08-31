@@ -2,7 +2,8 @@ import React from 'react';
 import styles from './videosList.module.css';
 
 import { Link } from 'react-router-dom';
-//import CardInfo from '../CardInfo/cardInfo';
+
+import CardInfo from './CardInfo/cardInfo';
 
 const VideosListTemplate = (props) => {
     return props.data.map( (item,i) => (
@@ -11,9 +12,12 @@ const VideosListTemplate = (props) => {
                 <div className={styles.left}
                     style={{
                         background:`url(/images/videos/${item.image})`
-                    }}>
+                    }}
+                >
+                    <div></div>
                 </div>
-                <div className={styles.right}>   
+                <div className={styles.right}>
+                    <CardInfo date={item.date}/>
                     <h2>{item.title}</h2>
                 </div>
             </div>

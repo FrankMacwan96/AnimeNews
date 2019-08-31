@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 //import { URL } from '../../../config';
-
+import {firebaseDB, firebaseloop, firebaseTeams} from '../../../firebase'
 import styles from '../articles.module.css';
 import Header from './header';
 
@@ -14,24 +14,22 @@ class NewsArticles extends Component {
     }
 
     componentDidMount(){
-        let articles = null;
-        let teams = null;
-        axios.get(`http://localhost:3005/articles?id=${this.props.match.params.id}`)
-        .then( response => {
-            
-            articles = response.data[0];
-            axios.get(`http://localhost:3005/teams?id=${articles.team}`)
-            .then( response => {
-                teams = response.data[0];
-                
+        
+        firebaseDB.ref(`articles/${this.props.match.params.id}`).once('value')
+        .then( (snapshot) => {
+            let article = snapshot.val();
+
+            firebaseTeams.orderByChild('id').equalTo(article.team).once('value')
+            .then( (snapshot) => {
+                const team = firebaseloop(snapshot)
+                console.log(team)
                 this.setState({
-                    article:articles,
-                    team:teams
+                    article,
+                    team
                 })
-                
             })
-            
         })
+
         
     }
 
@@ -39,7 +37,7 @@ class NewsArticles extends Component {
     render(){
         const article = this.state.article;
         const team = this.state.team;
-        console.log(article)
+        
         return(
             <div className={styles.articleWrapper}>
                 <Header
